@@ -320,7 +320,12 @@ function _tasks(&$db, $id_project, $status) {
 		WHERE t.progress=100 
 		";
 	}
-	
+	else if($status=='all') {
+		$sql = "SELECT t.rowid 
+		FROM ".MAIN_DB_PREFIX."projet_task t LEFT JOIN ".MAIN_DB_PREFIX."projet p ON (t.fk_projet=p.rowid) 
+		WHERE 1
+		";
+	}
 	if($id_project) $sql.=" AND t.fk_projet=".$id_project; 
 	else $sql.=" AND p.fk_statut IN (0,1)";	
 		

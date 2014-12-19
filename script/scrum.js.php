@@ -275,10 +275,11 @@ function project_develop_task(id_task) {
 }
 function project_loadTasks(id_projet) {
 	
-		/*project_get_tasks(id_projet, 'list-task-idea', 'idea');*/
-	project_get_tasks(id_projet , 'list-task-todo', 'todo');
-	project_get_tasks(id_projet , 'list-task-inprogress', 'inprogress');
-	project_get_tasks(id_projet , 'list-task-finish', 'finish');
+	if($('#list-task-idea').length>0) project_get_tasks(id_projet, 'list-task-idea', 'idea');
+	if($('#list-task-todo').length>0)project_get_tasks(id_projet , 'list-task-todo', 'todo');
+	if($('#list-task-inprogress').length>0)project_get_tasks(id_projet , 'list-task-inprogress', 'inprogress');
+	if($('#list-task-finish').length>0)project_get_tasks(id_projet , 'list-task-finish', 'finish');
+	if($('#list-task-all').length>0)project_get_tasks(id_projet , 'list-task-all', 'all');
 }
 
 function project_addDayAndWeek(mask) {

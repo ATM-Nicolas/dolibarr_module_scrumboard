@@ -99,28 +99,15 @@
 			<table id="scrum" id_projet="<?php echo $id_projet ?>">
 				<tr>
 					<!-- <td><?php echo $langs->trans('Ideas'); ?></td></td> -->
-					<td><?php echo $langs->trans('toDo'); ?><span rel="velocityToDo"></span></td></td>
-					<td><?php echo $langs->trans('inProgress'); ?><span rel="velocityInProgress"></span></td></td>
-					<td><?php echo $langs->trans('finish'); ?></td></td>
+					<td style="width:20%"><?php echo $langs->trans('Tasks'); ?></td></td>
+					<td style="width:80%"><?php echo $langs->trans('Planning'); ?><span rel="velocityInProgress"></span></td></td>
+					
 				</tr>
 				<tr>
-					<!-- <td class="projectDrag droppable" id="task-idea" rel="idea">
-						<ul id="list-task-idea" class="task-list" rel="idea">
-						
-						</ul>
-					</td> -->
+					<td class="" id="task-list" rel="tasks">
+					</td>
 					<td class="projectDrag droppable" id="task-todo" rel="todo">
-						<ul id="list-task-todo" class="task-list" rel="todo">
-						
-						</ul>
-					</td>
-					<td class="projectDrag droppable" id="task-inprogress" rel="inprogress">
-						<ul id="list-task-inprogress" class="task-list" rel="inprogress">
-						
-						</ul>
-					</td>
-					<td class="projectDrag droppable" id="task-finish" rel="finish">
-						<ul id="list-task-finish" class="task-list" rel="finish">
+						<ul id="list-task-all" class="task-list" rel="gantt">
 						
 						</ul>
 					</td>
@@ -209,7 +196,7 @@
 		
 		<script type="text/javascript">
 			$(document).ready(function() {
-				project_loadTasks(<?php echo $id_projet ?>);
+				gantt_loadTasks(<?php echo $id_projet ?>);
 				project_init_change_type(<?php echo $id_projet ?>);
 				project_velocity(<?php echo $id_projet ?>);
 			});
