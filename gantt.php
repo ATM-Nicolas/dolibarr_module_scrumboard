@@ -86,6 +86,10 @@
 
 		print "</table>";
 		
+		$task = new Task($db);
+		$TTask = $task->getTasksArray(0,0,$object->id);
+						
+		
 	}
 	else{
 		print $langs->trans("CurrentVelocity").' <span rel="currentVelocity"></span>';	
@@ -96,7 +100,7 @@
 
 		<div class="content">
 	
-			<table id="scrum" id_projet="<?php echo $id_projet ?>">
+			<table id="scrum" id_projet="<?php echo $id_projet ?>" border="0" cellspacing="0" cellpadding="0">
 				<tr>
 					<!-- <td><?php echo $langs->trans('Ideas'); ?></td></td> -->
 					<td style="width:20%"><?php echo $langs->trans('Tasks'); ?></td></td>
@@ -104,9 +108,43 @@
 					
 				</tr>
 				<tr>
-					<td class="" id="task-list" rel="tasks">
+					<td class="" id="task-list" rel="tasks" valign="top">
+						<div class="task-title">&nbsp;</div>	
+<?php
+						
+						foreach($TTask as $task) {
+							echo '<div class="task-title">'.$task->label.'</div>';	
+						}
+						
+?>
 					</td>
 					<td class="projectDrag droppable" id="task-todo" rel="todo">
+						<?php
+						$t_start = $object->date_start;
+						$t_end = $object->date_end;
+						
+						$t_current = $t_start;
+						?><div class="entete"><?php
+						while($t_current<=$t_end) {
+							?>
+							<span class="jour-semaine"><?php echo date('d/m', $t_current).' '.substr($langs->trans(date('l',$t_current)),0,1) ?></span>
+							<?php
+							$t_current=strtotime('+1day', $t_current);
+						}
+						
+						?>
+						</div><?php
+						
+						
+						foreach($TTask as $task) {
+							
+							
+							
+						}
+						
+						
+						?>
+						
 						<ul id="list-task-all" class="task-list" rel="gantt">
 						
 						</ul>
@@ -114,41 +152,7 @@
 				</tr>
 			</table>
 <?php	
-	/*
-	 * Actions
-	*/
-	print '<div class="tabsAction">';
-
-	if( (float)DOL_VERSION >= 3.4 ) {
-		
-	if ($user->rights->projet->all->creer || $user->rights->projet->creer)
-	{
-		if ($object->public || $object->restrictedProjectArea($user,'write') > 0)
-		{
-			print '<a class="butAction" href="javascript:reset_date_task('.$object->id.');">'.$langs->trans('ResetDateTask').'</a>';
-		}
-	}
-		
-		
-	}
-
-	if (($user->rights->projet->all->creer || $user->rights->projet->creer) && $id_projet)
-	{
-		if ($object->public || $object->restrictedProjectArea($user,'write') > 0)
-		{
-			print '<a class="butAction" href="javascript:create_task('.$object->id.');">'.$langs->trans('AddTask').'</a>';
-		}
-		else
-		{
-			print '<a class="butActionRefused" href="#" title="'.$langs->trans("NotOwnerOfProject").'">'.$langs->trans('AddTask').'</a>';
-		}
-	}
-	elseif( $id_projet)
-	{
-		print '<a class="butActionRefused" href="#" title="'.$langs->trans("NoPermission").'">'.$langs->trans('AddTask').'</a>';
-	}
-
-	print '</div>';
+	
 ?>
 
 <div>
@@ -196,9 +200,10 @@
 		
 		<script type="text/javascript">
 			$(document).ready(function() {
-				gantt_loadTasks(<?php echo $id_projet ?>);
+				
+			/*	project_loadTasks(<?php echo $id_projet ?>);
 				project_init_change_type(<?php echo $id_projet ?>);
-				project_velocity(<?php echo $id_projet ?>);
+				project_velocity(<?php echo $id_projet ?>);*/
 			});
 		</script>
 		
