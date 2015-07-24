@@ -339,6 +339,8 @@ ul {
     margin-bottom: 5px;
     cursor: move;
     text-align: center;
+    position:relative;
+    overflow:visible;
 }
 
 .gridster li {
@@ -487,4 +489,18 @@ li.dayoff {
 	color:#fff;
 	
 	border:0 none;
+}
+li.swap_time {
+	position:absolute;
+	background-color: #5b5bff;
+	border:0 none;
+}
+li.swap_before {
+	border-top-left-radius: 15px;
+	border-top-right-radius: 15px;
+}
+li.swap_after {
+	border-bottom-left-radius: 15px;
+	border-bottom-right-radius: 15px;
+	background-color: #48ca6e;
 }

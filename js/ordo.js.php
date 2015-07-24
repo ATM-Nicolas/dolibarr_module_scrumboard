@@ -280,7 +280,7 @@ function TOrdonnancement() {
 			    
 			}
 			
-			
+			if(wsid>0) $('ul[ws-id='+wsid+'] > li.swap_time').remove();
 			
 			var nb_tasks = tasks['tasks'].length;
 			$.each(tasks['tasks'], function(i, task) {
@@ -308,7 +308,10 @@ function TOrdonnancement() {
 				
 				var duration = task.planned_workload;
 				var height = 1;
-				if(duration>0) {
+				if(task.height>0) {
+				    height = task.height * coef_time;
+				}
+				else if(duration>0) {
 					height = Math.round( duration * (1- (task.progress / 100)) /TVelocity[task.fk_workstation]*coef_time  );
 				}
 				
@@ -323,6 +326,19 @@ function TOrdonnancement() {
 					
 				}
 				
+				if(task.h_before>0) {
+				    var h_before = task.h_before * coef_time;
+				    $li.after('<li class="swap_time swap_before" style="top:'+(task_top-h_before)+'px; left:'+(width_column * task.grid_col)+'px;height:'+h_before+'px; width:'+(width_column / 2)+'px"></li>');
+				}
+				if(task.h_after>0) {
+                    var h_after= task.h_after * coef_time;
+                    $li.after('<li class="swap_time swap_after" style="top:'+(task_top+height)+'px; left:'+(((width_column-1) * task.grid_col)+(width_column / 2)) +'px;height:'+h_after+'px; width:'+(width_column / 2)+'px"></li>');
+                }
+				/*liwsid = $li.attr('ordo-ws-id');
+				$ul = $('ul[ws-id='+wsid+']');
+				
+				$ul.append('<li class="swap_time swap_before" style="top:"></li>');
+				*/
 				if(i>10) {
 					 
 					 $li.css({
@@ -330,10 +346,6 @@ function TOrdonnancement() {
                         	,left:(width_column * task.grid_col)
                         	,height: height
                 	 });
-					 
-					 /*if(i+1 == nb_tasks) {
-					 	afterAnimationOrder();
-					 }*/
 					 
 				}
 				else {

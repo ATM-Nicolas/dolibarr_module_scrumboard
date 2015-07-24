@@ -340,11 +340,12 @@ global $conf,$db;
 	   }
       
        if( $fk_workstation_to_order == 0  ||  $fk_workstation == $fk_workstation_to_order ) {
-               if(!isset($TSmallGeoffrey[$fk_workstation])) $TSmallGeoffrey[$fk_workstation] = new TSmallGeoffrey($ws_nb_ressource, $TWorkstation[$fk_workstation]['nb_hour_before'], $TWorkstation[$fk_workstation]['nb_hour_after']);
+               $velocity = $TPlan[$fk_workstation]['@param']['velocity'];
+           
+               if(!isset($TSmallGeoffrey[$fk_workstation])) $TSmallGeoffrey[$fk_workstation] = new TSmallGeoffrey($ws_nb_ressource, $TWorkstation[$fk_workstation]['nb_hour_before']/ $velocity, $TWorkstation[$fk_workstation]['nb_hour_after']/ $velocity);
               
                if(!isset( $TDayOff[$fk_workstation] )) $TDayOff[$fk_workstation] = _ordo_init_dayOff($TSmallGeoffrey[$fk_workstation], $fk_workstation, $time_init, $time_day, $nb_second_in_hour, $ws_velocity);
-           
-       	       $velocity = $TPlan[$fk_workstation]['@param']['velocity'];
+               
                if($velocity<=0)$velocity=1;
                $height = $task['planned_workload'] / $velocity * (1- ($task['progress'] / 100));
 			   
@@ -359,17 +360,21 @@ global $conf,$db;
                		$TSmallGeoffrey[$fk_workstation]->debug = true;
 				    $TSmallGeoffrey[$fk_workstation]->debug_info = 'Taskid='. $task['id'];
 			   }
-               list($col, $row, $grid_height) = $TSmallGeoffrey[$fk_workstation]->getNextPlace($height,$t_nb_ressource, (int)$task['fk_task_parent'] );
+               list($col, $row, $grid_height, $h_before, $h_after) = $TSmallGeoffrey[$fk_workstation]->getNextPlace($height,$t_nb_ressource, (int)$task['fk_task_parent'] );
                
-               $TSmallGeoffrey[$fk_workstation]->addBox($row,$col, $height, $t_nb_ressource, $task['id'], $task['fk_parent']);
+               $TSmallGeoffrey[$fk_workstation]->addBox($row,$col, $height, $t_nb_ressource, $task['id'], $task['fk_parent'], $h_before, $h_after);
                
 	   		   //list($col, $row) = _ordonnanceur_get_next_coord($TWorkstation, $TPlan[$fk_workstation], $task, $height);  
                
                //$row+=$grid_decalage;
                
 	  		   $task['grid_col'] = $col;
-       		   $task['grid_row'] = $row;
-	  
+       		   $task['grid_row'] = $row+$h_before;
+               
+               $task['h_before'] = $h_before / $velocity ;
+               $task['h_after'] = $h_after / $velocity ;
+               $task['height'] = $height;
+      
       //TODO prendre en compte les jours non travaillé
                $task['time_estimated_start'] = $time_init + ($row * $nb_second_in_hour);
                $task['time_estimated_end'] =  $task['time_estimated_start'] + ($height  *$nb_second_in_hour) ;

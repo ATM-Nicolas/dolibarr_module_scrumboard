@@ -45,7 +45,7 @@ class TSmallGeoffrey {
 	    return array(0,0);
 	}
 
-    function addBox($top,$left,$height,$width, $taskid=0, $fk_task_parent=0) {
+    function addBox($top,$left,$height,$width, $taskid=0, $fk_task_parent=0, $h_before=0, $h_after=0) {
         
         $box = new stdClass;
         $box->top = $top;
@@ -54,6 +54,9 @@ class TSmallGeoffrey {
         $box->width = $width;
         $box->taskid = $taskid;
         $box->fk_task_parent = $fk_task_parent;
+        $box->h_before = $h_before;
+        $box->h_after = $h_after;
+        $box->totalHeight = $box->height + $box->h_before + $box->h_after;
         
         $this->TBox[] = $box;
         
@@ -98,7 +101,7 @@ class TSmallGeoffrey {
         
         foreach($TBox as &$box) {
             
-            if($box->left<=$x && $box->left + $box->width > $x && $box->top<=$y && $box->top + $box->height>$y ) { // il y a une boite ici
+            if($box->left<=$x && $box->left + $box->width > $x && $box->top<=$y && $box->top + $box->totalHeight>$y ) { // il y a une boite ici
                 if($this->debug){ print " y a déjà une boite là !";
                     var_dump($box);}
                 return false;
@@ -125,7 +128,7 @@ class TSmallGeoffrey {
             if( $box->left + $box->width > $x && $box->left<=$x ) {
             	//var_dump($box, '<hr>');
                 // boite au dessus ou au dessous ?
-                if($box->top + $box->height<=$y && $box->top + $box->height>$y_before){
+                if($box->top + $box->totalHeight<=$y && $box->top + $box->totalHeight>$y_before){
                     $y_before = $box->top + $box->height;
                 }
                 else if($box->top >= $y && ($box->top < $y_after || $y_after ===  false) ){
@@ -134,7 +137,7 @@ class TSmallGeoffrey {
                 
             }
             
-            if($box->top + $box->height>$y && $box->top<=$y) {
+            if($box->top + $box->totalHeight>$y && $box->top<=$y) {
                 
                 if($box->left + $box->width >= $x && $box->left < $x && $box->left + $box->width  > $x_before ){
                     $x_before = $box->left + $box->width; 
@@ -176,11 +179,17 @@ class TSmallGeoffrey {
 			print '<br />'.$this->debug_info.'</strong><hr>';
 		}
         list($yParent,$xParent) = $this->getMinY($fk_task_parent);
-		$yParent-=$this->nb_hour_before;
-		$h+=$this->nb_hour_after;
+        
+        $h_before = $this->nb_hour_before;
+        $h_after = $this->nb_hour_after;
+        
+		$yParent-=$h_before;
+        
+        
+        $y = max($this->top, $yParent);
 		
-		$y = max($this->top, $yParent);
-		
+        $h+=$h_after+$h_before;
+        
         $x = 0;
         
         //if(empty($this->TBox)) return array(0,0);
@@ -205,7 +214,7 @@ class TSmallGeoffrey {
                   $empty_place = true;
                   if($this->isLargeEnougthEmptyPlace($y,$x, $h, $w, $y_first_block_not_enougth_large)) {
                         if($this->debug) print '...trouvé ('.$y.','.$x.') !<br />';    
-                      return array($x,$y, $h); 
+                      return array($x,$y, $h, $h_before, $h_after); 
                       
                   }
                   
@@ -237,7 +246,7 @@ class TSmallGeoffrey {
            $cpt_notFinishYet++;
            if($cpt_notFinishYet>$nb_max) {
                if($this->debug) exit('infini');
-			   return array(-0.5,99, $h);
+			   return array(-0.5,99, $h, $h_before, $h_after);
            }
            
         }
