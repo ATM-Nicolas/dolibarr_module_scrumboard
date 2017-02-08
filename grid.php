@@ -130,12 +130,18 @@
 						
 						_draw_grid($TWorkstation, $column_width);
 						
+						if(empty($conf->global->SCRUM_HIDE_PROJECT_LIST_ON_THE_RIGHT)) {
+						
 						?>
 						<div class="projects" style="float:left;">
 						    <ul style="position:relative;width:200px; top:38px;" id="list-projects" class="task-list needToResize" >
                         
                             </ul>
 						</div>
+						
+						<?php 
+						}
+						?>
 					</td>
 				</tr>
 			</table>
@@ -184,7 +190,7 @@ function _js_grid(&$TWorkstation, $day_height, $column_width) {
 				document.ordo = {};
 
 				if(w_column == -1) {
-					w_column = parseInt(($( window ).width() - $('#id-left').width()) / <?php echo $nb_ressource_total + (empty($conf->global->SCRUM_HIDE_PROJECT_LIST_ON_THE_RIGHT) ? 2 : 1); ?>);
+					w_column = parseInt(($( window ).width() - $('#id-left').width() - 50) / <?php echo $nb_ressource_total + (empty($conf->global->SCRUM_HIDE_PROJECT_LIST_ON_THE_RIGHT) ? 2 : 0); ?>);
 					$('div.columnordo').each(function(i,item) {
 						$item = $(item);
 						var nb_r = $item.attr('ws-nb-ressource'); 
