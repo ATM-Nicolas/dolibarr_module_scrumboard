@@ -613,5 +613,14 @@ function toggle_storie_visibility(id_project, storie_order) {
 function toggle_visibility(id_project, storie_order) {
 	toggle_storie_visibility(id_project, storie_order);
 	
-	location.reload();
+	console.log(storie_order);
+	let tr = $('tr.hiddable[story-k='+storie_order+']');
+	if(tr.attr('style').indexOf('display') < 0) {
+		tr.hide(200);
+		$('tr.ligne_titre[story-k='+storie_order+'] a.visibility img').attr('src', '<?php print DOL_URL_ROOT.'/theme/md/img/switch_on_old.png'; ?>');
+	}
+	else {
+		tr.show(200);
+		$('tr.ligne_titre[story-k='+storie_order+'] a.visibility img').attr('src', '<?php print DOL_URL_ROOT.'/theme/md/img/switch_off_old.png'; ?>');
+	}
 }
